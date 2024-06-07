@@ -20,7 +20,7 @@ import { engine } from 'express-handlebars'
 import { Server } from 'socket.io' //llaves es una dependencia
 import { generateRandomProducts } from './controllers/productController.js';//importo la función generateRandomProducts desde productController.js
 import { generateRandomUsers } from './controllers/userController.js';//importo la función generateRandomUsers desde userController.js
-
+import { addLogger } from './utils/logger.js';
 
 
 //console.log(__dirname)
@@ -52,6 +52,7 @@ const PORT = 8000
 
 //Se declara un objeto corsOptions para contener la configuración personalizada de CORS.
 // establece una función para determinar si una solicitud CORS debe ser permitida o denegada en función del origen de la solicitud.
+// Cors: whitelist (lista blanca de servidores que pueden acceder). 
 const corsOptions = {
   //solo las rutas que esten dentro de origin se va a poder conectar
   origin: 'http://127.0.0.1:5500',
@@ -133,6 +134,11 @@ app.use(express.urlencoded({ extended: true }))
 //COOKIES
 //todas las generadas aqui se van a hacer con esta clave secreta
 app.use(cookieParser(varenv.cookies_secret))
+
+//LOGGER
+// Se aplica el middleware 'addLogger' para registrar información sobre cada solicitud HTTP que llega al servidor.
+// app.use(addLogger);
+app.use(addLogger)
 
 
 

@@ -57,7 +57,7 @@ const logger = winston.createLogger({
             //Se utiliza winston.format.combine() para combinar los formatos de logs.
             format: winston.format.combine(
                 // Se utiliza winston.format.colorize() para aplicar colores a los mensajes de logs, utilizando los colores definidos en customLevelOpt.colors.
-                winston.format.colorize({ color: customLevelOpt.colors }),
+                winston.format.colorize({ colors: customLevelOpt.colors }),
                 // Se utiliza winston.format.simple() para formatear los mensajes de logs de una manera simple y legible.
                 winston.format.simple()
             )
