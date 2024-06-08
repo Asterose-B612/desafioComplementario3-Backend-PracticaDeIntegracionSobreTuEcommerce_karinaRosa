@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { login, register, sessionGithub,current, logout, testJWT } from "../controllers/sessionController.js";
+import { login, register, sessionGithub,current, logout, testJWT, changePassword } from "../controllers/sessionController.js";
 
 
 
@@ -81,6 +81,20 @@ sessionRouter.get('/logout', logout);
 sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: false }), testJWT)
 
 // fin RUTA JWT....................
+
+
+
+
+
+
+// inicio REESTABLECER CONTRASEÑA....................
+
+//Configuración de la ruta '/changePassword' en el enrutador 'sessionRouter' para reestablecer contraseña
+//passport.authenticate('jwt', { session: false }) NO LO USAMOS PORQUE SI SOY UN USUARIO QUE PERDIÓ LA CONTRASEÑA NO ESTOY LOGUEADO, No tengo que estar logueado xq si ya estoy logueado no cambia la contraseña.
+//es un método ´post  porque tengo que enviar el email
+sessionRouter.post('/changePassword', changePassword)
+
+// fin REESTABLECER CONTRASEÑA....................
 
 
 

@@ -259,3 +259,5 @@ error: ERROR
 error: Metodo: GET en ruta /loggerTest - 8/6/2024 00:49:45
 info: Metodo: GET en ruta / - 8/6/2024 00:49:51
 info: Metodo: GET en ruta /api/products?limit=3 - 8/6/2024 00:53:02
+info: Metodo: POST en ruta /api/session/changePassword - 8/6/2024 04:10:06
+info: Metodo: POST en ruta /api/session/changePassword - 8/6/2024 04:10:06

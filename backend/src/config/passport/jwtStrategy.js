@@ -18,7 +18,7 @@ const cookieExtractor = req => {
 }
 
 
-console.log(varenv.jwt_secret)
+//console.log(varenv.jwt_secret)
 /*****STRATEGY OF JWT***** */
 
 //1° Defino, Donde voy a consultar esos valores?

@@ -1,5 +1,6 @@
 // Importa el módulo 'passport' que se utiliza para la autenticación de usuarios.
 import passport from "passport";
+import { sendEmailChangePassword } from "../utils/nodemailer.js";
 
 
 
@@ -148,3 +149,26 @@ export const testJWT = async (req, res) => {
         res.status(200).send(req.user);
 }
 // fin RUTA JWT....................
+
+
+
+
+
+
+
+
+
+// inicio REESTABLECER CONTRASEÑA....................
+
+// // Función asíncrona para manejar la solicitud de cambio de contraseña cuando se hace clic en esta ruta.
+export const changePassword = async (req, res) => {
+    const{email} = req.body//tomamos el email del body
+    sendEmailChangePassword(email, "https://www.google.com/")
+    //cuanda haga click en la ruta voy a consultar el email.
+    // Imprime el correo electrónico del usuario en la consola
+   // console.log(req.user.email)
+    // Verifica si el usuario tiene permisos de 'premium'.
+   // if (req.user.rol == 'premium')
+        res.status(200).send("Tiene un 15% de descuento por ser usuario premium");  
+}
+// fin REESTABLECER CONTRASEÑA....................
