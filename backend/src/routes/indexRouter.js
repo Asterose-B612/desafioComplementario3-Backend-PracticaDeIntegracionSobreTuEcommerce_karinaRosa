@@ -13,6 +13,7 @@ import mockRouter from './mockRouter.js'
 const indexRouter = express.Router()
 //ruta de inicio. clase 19. Dar la bienvenida al usuario.
 // Define una ruta GET para el punto de entrada '/' del servidor
+// Define una ruta GET para el punto de entrada '/' del servidor
 indexRouter.get('/', (req, res) => {
     try {
         // Intenta enviar una respuesta 'Bienvenidos' al cliente

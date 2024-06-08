@@ -137,6 +137,11 @@ app.use(cookieParser(varenv.cookies_secret))
 
 //LOGGER
 // Se aplica el middleware 'addLogger' para registrar información sobre cada solicitud HTTP que llega al servidor.
+// app.use(addLogger);
+app.use(addLogger)
+
+//LOGGER
+// Se aplica el middleware 'addLogger' para registrar información sobre cada solicitud HTTP que llega al servidor.
 app.use(addLogger)
 
 
