@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { login, register, sessionGithub,current, logout, testJWT, sendEmailPassword } from "../controllers/sessionController.js";
+import { login, register, sessionGithub,current, logout, testJWT, sendEmailPassword,changePassword } from "../controllers/sessionController.js";
 
 
 

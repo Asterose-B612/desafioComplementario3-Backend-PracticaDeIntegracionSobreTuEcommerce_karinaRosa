@@ -124,6 +124,12 @@ export const createTicket = async (req, res) => {
                 // reduce() recorre el array de productos y acumula el resultado de la multiplicación del precio y la cantidad de cada producto
                 const totalPrice = cart.products.reduce((a, b) => (a.price * a.quantity) + (b.price * b.quantity), 0);
 
+
+                // Aplica el descuento del 15% si el usuario es premium
+                if (req.user.rol === "premium") {
+                    totalPrice *= 0.85;
+                }
+
                 // Genera un nuevo ticket
                 const newTicket = await ticketModel.create({
                     // code: genera un identificador único para el ticket usando la función randomUUID() de crypto
@@ -143,7 +149,7 @@ export const createTicket = async (req, res) => {
                 res.status(200).send(newTicket);
             } else {
                 // Si hay productos sin stock, retorna la lista de productos sin stock al cliente
-                
+
                 //RETORNAN PRODUCTOS SIN STOCK
             }
         } else {
