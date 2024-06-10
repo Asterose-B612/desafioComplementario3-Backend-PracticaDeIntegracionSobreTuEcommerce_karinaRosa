@@ -1,10 +1,12 @@
 // Importa el módulo 'passport' que se utiliza para la autenticación de usuarios.
-import passport from "passport";
+//import passport from "passport";
+import { userModel } from "../models/user.js";
 import { sendEmailChangePassword } from "../utils/nodemailer.js";
+import jwt from "jsonwebtoken";
+import { validatePassword, createHash } from "../utils/bcrypt.js";
 
 
-
-// inicio INICIO DE SESION....................
+// inicio INICIO DE SESION : LOGUEO....................
 
 // Función asíncrona para el inicio de sesión de un usuario.
 export const login = async (req, res) => {
@@ -29,7 +31,7 @@ export const login = async (req, res) => {
         res.status(500).send("Error al loguear usuario");
     }
 }
-//fin INICIO DE SESION....................
+//fin INICIO DE SESION : LOGUEO....................
 
 
 
@@ -153,22 +155,98 @@ export const testJWT = async (req, res) => {
 
 
 
-
-
-
-
-
 // inicio REESTABLECER CONTRASEÑA....................
+
+//RUTA PARA CAMBIAR LA CONTRASEÑA
 
 // // Función asíncrona para manejar la solicitud de cambio de contraseña cuando se hace clic en esta ruta.
 export const changePassword = async (req, res) => {
-    const{email} = req.body//tomamos el email del body
-    sendEmailChangePassword(email, "https://www.google.com/")
-    //cuanda haga click en la ruta voy a consultar el email.
-    // Imprime el correo electrónico del usuario en la consola
-   // console.log(req.user.email)
-    // Verifica si el usuario tiene permisos de 'premium'.
-   // if (req.user.rol == 'premium')
-        res.status(200).send("Tiene un 15% de descuento por ser usuario premium");  
+    // Extraemos el token de los parámetros de la solicitud y la nueva contraseña del cuerpo de la solicitud
+    const { token } = req.params
+    const { newPassword } = req.body
+    // console.log(token.substr(6,))
+
+
+    try {
+        // Verificamos el token JWT, quitando los primeros 6 caracteres y usando la clave "coder"
+        const validateToken = jwt.verify(token.substr(6,), "coder")
+        // Buscamos un usuario en la base de datos cuyo email coincida con el del token validado
+        //usofinOne xq esta dentro de un array.
+        const user = await userModel.findOne({ email: validateToken.userEmail })
+
+
+        if (user) {
+            //  console.log(newPassword)
+            //console.log(user.password)
+            //  console.log(user)
+            // Si el usuario existe, verificamos que la nueva contraseña NO SEA IGUAL a la anterior
+
+            if (!validatePassword(newPassword, user.password)) {
+                // Si no es igual, generamos un hash de la nueva contraseña
+                const hashPassword = createHash(newPassword)
+                // Actualizamos la contraseña del usuario con el nuevo hash
+                user.password = hashPassword
+                // Guardamos los cambios en la base de datos
+                const resultado = await userModel.findByIdAndUpdate(user._id, user)
+                //console.log(resultado)
+                // Enviamos una respuesta exitosa
+                res.status(200).send("Contraseña modificada correctamente")
+            } else {
+                // SI las contraseñas SON IGUALES, enviamos un error
+                res.status(400).send("La contraseña no puede ser identica a la anterior")
+            }
+
+
+        } else {
+            // Si el USUARIO NO EXISTE, enviamos un error de "Usuario no encontrado"
+            res.status(404).send("Usuario no encontrado")
+        }
+
+
+    } catch (e) {
+        console.log(e)
+        // Si el token ha expirado, enviamos un error específico
+        if (e?.message == 'jwt expired') {
+            //error 400 porque no es un error que rompe el servidor para poner 500
+            res.status(400).send("Expiró el tiempo para cambio de contraseña. En breves momentos se le estará enviando un nuevo mail para el cambio de contraseña")
+        } else {
+            // Para otros errores, enviamos un error de servidor
+            res.status(500).send("e");
+        }
+    }
+};
+
+
+//.....PIDO EL EMAIL AL USUARIO
+// Función asíncrona para manejar la solicitud de cambio de contraseña cuando se hace clic en esta ruta.
+export const sendEmailPassword = async (req, res) => {
+
+    try {
+        // Extraemos el email del cuerpo de la solicitud(body)
+        const { email } = req.body
+        // Buscamos un usuario en la base de datos cuyo email coincida con el proporcionado
+        const user = await userModel.find({ email: email })
+
+        if (user) {
+            // Si el usuario existe, generamos un token JWT con el email del usuario y la clave codeSecret "coder"
+            const token = jwt.sign({ userEmail: email }, "coder", { expiresIn: '1hs' })
+            // Creamos un enlace para restablecer la contraseña que incluye el token
+            const resetLink = `http://localhost:8000/api/session/reset-password?token=${token}`
+            // Enviamos un email al usuario con el enlace para restablecer la contraseña
+            sendEmailChangePassword(email, resetLink)
+            // Enviamos una respuesta exitosa
+            res.status(200).send("Email enviado correctamente");
+
+        } else {
+            // Si el usuario no existe, enviamos un error de "Usuario no existe"
+            res.status(404).send("Usuario no existe");
+        }
+
+    } catch (e) {
+        console.log(e)
+        // Para cualquier otro error, enviamos un error de servidor
+        res.status(500).send("e");
+    }
 }
+
 // fin REESTABLECER CONTRASEÑA....................

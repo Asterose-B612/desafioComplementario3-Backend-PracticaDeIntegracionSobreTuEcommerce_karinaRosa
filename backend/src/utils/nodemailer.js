@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 
+
 const transporter = nodemailer.createTransport({
 
     service: 'gmail',
@@ -20,11 +21,11 @@ export const sendEmailChangePassword = async (email, linkChangePassword) => {
         // Asunto del correo electrónico.
         subject: "Reestablecimiento de contraseña",
         // Texto plano del correo electrónico.
-        text:
-            `
-        Haz click en el siguiente enlace para el reestablecimiento de tu contraseña: ${linkChangePassword}
-                
-        `,
+       // text:
+       //     `
+      //  Haz click en el siguiente enlace para el reestablecimiento de tu contraseña: ${linkChangePassword}
+              
+       // `,
         // Formato HTML del correo electrónico.
         html:
 
